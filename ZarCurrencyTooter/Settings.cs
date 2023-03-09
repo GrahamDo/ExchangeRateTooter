@@ -41,44 +41,32 @@ namespace ZarCurrencyTooter
                     ExchangeRateApiKey = value;
                     break;
                 case "starttime":
-                    try
-                    {
-                        StartTime = Convert.ToDateTime(value);
-                    }
-                    catch (FormatException)
-                    {
-                        throw new ApplicationException($"{value} is not a valid time");
-                    }
+                    StartTime = TryFormatDateTime(value);
                     break;
                 case "endtime":
-                    try
-                    {
-                        EndTime = Convert.ToDateTime(value);
-                    }
-                    catch (FormatException)
-                    {
-                        throw new ApplicationException($"{value} is not a valid time");
-                    }
+                    EndTime = TryFormatDateTime(value);
                     break;
                 case "publicholidays":
                     var elements = value.Split(',');
                     var result = new List<DateTime>();
                     foreach (var element in elements)
-                    {
-                        try
-                        {
-                            result.Add(Convert.ToDateTime(element));
-                        }
-                        catch (FormatException)
-                        {
-                            throw new ApplicationException($"{element} is not a valid date");
-                        }
-                    }
-
+                        result.Add(TryFormatDateTime(element));
                     PublicHolidays = result;
                     break;
                 default:
                     throw new ApplicationException($"Invalid setting: {setting}");
+            }
+        }
+
+        public DateTime TryFormatDateTime(string value)
+        {
+            try
+            {
+                return Convert.ToDateTime(value);
+            }
+            catch (FormatException)
+            {
+                throw new ApplicationException($"{value} is not a valid date");
             }
         }
     }
