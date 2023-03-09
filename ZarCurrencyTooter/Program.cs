@@ -2,9 +2,21 @@
 {
     internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            try
+            {
+                var settings = Settings.Load();
+                if (args.Length == 3 && args[0].ToLower() == "--set")
+                {
+                    settings.SetValueFromArguments(args[1], args[2]);
+                    settings.Save();
+                }
+            }
+            catch (ApplicationException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }

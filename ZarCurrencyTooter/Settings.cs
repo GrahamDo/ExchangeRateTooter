@@ -23,5 +23,17 @@ namespace ZarCurrencyTooter
             var serialised = JsonConvert.SerializeObject(this);
             File.WriteAllText(SettingsFileName, serialised);
         }
+
+        public void SetValueFromArguments(string setting, string value)
+        {
+            switch (setting.ToLower())
+            {
+                case "exchangerateapikey":
+                    ExchangeRateApiKey = value;
+                    break;
+                default:
+                    throw new ApplicationException($"Invalid setting: {setting}");
+            }
+        }
     }
 }
