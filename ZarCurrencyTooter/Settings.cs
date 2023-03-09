@@ -60,14 +60,11 @@ namespace ZarCurrencyTooter
 
         public DateTime TryFormatDateTime(string value)
         {
-            try
-            {
-                return Convert.ToDateTime(value);
-            }
-            catch (FormatException)
-            {
-                throw new ApplicationException($"{value} is not a valid date");
-            }
+            var isDateTime = DateTime.TryParse(value, out var result);
+            if (!isDateTime)
+                throw new ApplicationException($"{value} is not a valid date/time");
+
+            return result;
         }
     }
 }
