@@ -7,6 +7,12 @@ namespace ZarCurrencyTooter
         private const string SettingsFileName = "settings.json";
 
         public string ExchangeRateApiKey { get; set; }
+        public List<DateTime> PublicHolidays { get; set; }
+
+        public Settings()
+        {
+            PublicHolidays = new List<DateTime>();
+        }
 
         public static Settings Load()
         {
@@ -30,6 +36,23 @@ namespace ZarCurrencyTooter
             {
                 case "exchangerateapikey":
                     ExchangeRateApiKey = value;
+                    break;
+                case "publicholidays":
+                    var elements = value.Split(',');
+                    var result = new List<DateTime>();
+                    foreach (var element in elements)
+                    {
+                        try
+                        {
+                            result.Add(Convert.ToDateTime(element));
+                        }
+                        catch (FormatException)
+                        {
+                            throw new ApplicationException($"{element} is not a valid date");
+                        }
+                    }
+
+                    PublicHolidays = result;
                     break;
                 default:
                     throw new ApplicationException($"Invalid setting: {setting}");
