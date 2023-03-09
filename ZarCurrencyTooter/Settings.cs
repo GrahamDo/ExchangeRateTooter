@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Xml.Linq;
 
 namespace ZarCurrencyTooter
 {
@@ -7,6 +8,8 @@ namespace ZarCurrencyTooter
         private const string SettingsFileName = "settings.json";
 
         public string ExchangeRateApiKey { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
         public List<DateTime> PublicHolidays { get; set; }
 
         public Settings()
@@ -36,6 +39,26 @@ namespace ZarCurrencyTooter
             {
                 case "exchangerateapikey":
                     ExchangeRateApiKey = value;
+                    break;
+                case "starttime":
+                    try
+                    {
+                        StartTime = Convert.ToDateTime(value);
+                    }
+                    catch (FormatException)
+                    {
+                        throw new ApplicationException($"{value} is not a valid time");
+                    }
+                    break;
+                case "endtime":
+                    try
+                    {
+                        EndTime = Convert.ToDateTime(value);
+                    }
+                    catch (FormatException)
+                    {
+                        throw new ApplicationException($"{value} is not a valid time");
+                    }
                     break;
                 case "publicholidays":
                     var elements = value.Split(',');
