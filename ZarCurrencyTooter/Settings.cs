@@ -26,7 +26,7 @@ namespace ZarCurrencyTooter
 
         public void Save()
         {
-            var serialised = JsonConvert.SerializeObject(this);
+            var serialised = JsonConvert.SerializeObject(this, Formatting.Indented);
             File.WriteAllText(SettingsFileName, serialised);
         }
 
