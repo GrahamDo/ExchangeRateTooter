@@ -8,8 +8,8 @@ namespace ZarCurrencyTooter
         private const string SettingsFileName = "settings.json";
 
         public string ExchangeRateApiKey { get; set; }
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
+        public TimeSpan StartTime { get; set; }
+        public TimeSpan EndTime { get; set; }
         public List<DateTime> PublicHolidays { get; set; }
 
         public Settings()
@@ -41,10 +41,10 @@ namespace ZarCurrencyTooter
                     ExchangeRateApiKey = value;
                     break;
                 case "starttime":
-                    StartTime = TryFormatDateTime(value);
+                    StartTime = TryFormatTimeSpan(value);
                     break;
                 case "endtime":
-                    EndTime = TryFormatDateTime(value);
+                    EndTime = TryFormatTimeSpan(value);
                     break;
                 case "publicholidays":
                     var elements = value.Split(',');
@@ -58,11 +58,19 @@ namespace ZarCurrencyTooter
             }
         }
 
+        public TimeSpan TryFormatTimeSpan(string value)
+        {
+            var isTimeSpan = TimeSpan.TryParse(value, out var result);
+            if (!isTimeSpan)
+                throw new ApplicationException($"{value} is not a valid time");
+
+            return result;
+        }
         public DateTime TryFormatDateTime(string value)
         {
             var isDateTime = DateTime.TryParse(value, out var result);
             if (!isDateTime)
-                throw new ApplicationException($"{value} is not a valid date/time");
+                throw new ApplicationException($"{value} is not a valid date");
 
             return result;
         }
