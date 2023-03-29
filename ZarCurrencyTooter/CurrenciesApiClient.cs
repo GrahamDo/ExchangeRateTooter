@@ -19,7 +19,13 @@ namespace ZarCurrencyTooter
             try
             {
                 var response = await restClient.GetAsync(request);
+                if (response?.Content == null)
+                    throw new ApplicationException("Empty response from Exchange Rate API Client");
+
                 var results = JsonConvert.DeserializeObject<CurrencyLatestResults>(response.Content);
+                if (results == null)
+                    throw new ApplicationException("Can't deserialise Exchange Rate Content");
+
                 return results;
             }
             catch (HttpRequestException e)
