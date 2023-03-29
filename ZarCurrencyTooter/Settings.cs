@@ -10,6 +10,8 @@ namespace ZarCurrencyTooter
         public string ExchangeRateApiKey { get; set; }
         public string BaseCurrencyCode { get; set; }
         public List<string> CompareCurrencyCodes { get; set; }
+        public string MastodonToken { get; set; }
+        public string MastodonInstanceUrl { get; set; }
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
         public List<DateTime> PublicHolidays { get; set; }
@@ -51,6 +53,12 @@ namespace ZarCurrencyTooter
                     foreach (var currencyCode in currencyCodes)
                         currencyCodesList.Add(currencyCode);
                     CompareCurrencyCodes = currencyCodesList;
+                    break;
+                case "mastodontoken":
+                    MastodonToken = value;
+                    break;
+                case "mastodoninstanceurl":
+                    MastodonInstanceUrl = value;
                     break;
                 case "starttime":
                     StartTime = TryFormatTimeSpan(value);
