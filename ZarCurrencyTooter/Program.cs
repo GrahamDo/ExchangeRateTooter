@@ -2,7 +2,7 @@
 {
     internal class Program
     {
-        private static void Main(string[] args)
+        private static async Task Main(string[] args)
         {
             try
             {
@@ -17,7 +17,9 @@
                 var now = DateTime.Now;
                 if (ShouldRun(now, args, settings))
                 {
-                    Console.WriteLine("Starting...");
+                    var client = new CurrenciesApiClient();
+                    var rates = await client.GetLatest(settings.ExchangeRateApiKey, settings.BaseCurrencyCode,
+                        settings.CompareCurrencyCodes);
                 }
             }
             catch (ApplicationException ex)
