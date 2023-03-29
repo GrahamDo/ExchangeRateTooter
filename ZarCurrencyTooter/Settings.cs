@@ -8,6 +8,8 @@ namespace ZarCurrencyTooter
         private const string SettingsFileName = "settings.json";
 
         public string ExchangeRateApiKey { get; set; }
+        public string BaseCurrencyCode { get; set; }
+        public List<string> CompareCurrencyCodes { get; set; }
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
         public List<DateTime> PublicHolidays { get; set; }
@@ -40,6 +42,16 @@ namespace ZarCurrencyTooter
                 case "exchangerateapikey":
                     ExchangeRateApiKey = value;
                     break;
+                case "basecurrencycode":
+                    BaseCurrencyCode = value;
+                    break;
+                case "comparecurrencycodes":
+                    var currencyCodes = value.Split(',');
+                    var currencyCodesList = new List<string>();
+                    foreach (var currencyCode in currencyCodes)
+                        currencyCodesList.Add(currencyCode);
+                    CompareCurrencyCodes = currencyCodesList;
+                    break;
                 case "starttime":
                     StartTime = TryFormatTimeSpan(value);
                     break;
@@ -47,11 +59,11 @@ namespace ZarCurrencyTooter
                     EndTime = TryFormatTimeSpan(value);
                     break;
                 case "publicholidays":
-                    var elements = value.Split(',');
-                    var result = new List<DateTime>();
-                    foreach (var element in elements)
-                        result.Add(TryFormatDateTime(element));
-                    PublicHolidays = result;
+                    var holidays = value.Split(',');
+                    var holidaysList = new List<DateTime>();
+                    foreach (var holiday in holidays)
+                        holidaysList.Add(TryFormatDateTime(holiday));
+                    PublicHolidays = holidaysList;
                     break;
                 default:
                     throw new ApplicationException($"Invalid setting: {setting}");
