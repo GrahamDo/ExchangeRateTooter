@@ -20,6 +20,8 @@
                     var client = new CurrenciesApiClient();
                     var rates = await client.GetLatest(settings.ExchangeRateApiKey, settings.BaseCurrencyCode,
                         settings.CompareCurrencyCodes);
+                    var template = new TootTemplate();
+                    var tootText = template.GetTootText(now, settings.BaseCurrencyCode, rates);
                 }
             }
             catch (ApplicationException ex)
