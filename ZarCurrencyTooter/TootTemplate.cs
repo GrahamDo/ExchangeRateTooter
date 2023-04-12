@@ -22,7 +22,7 @@ public class TootTemplate
         foreach (var keyValuePair in rates.Rates)
         {
             var value = 1 / keyValuePair.Value;
-            result.AppendLine($"{keyValuePair.Key}: {value:#0.0000}<br/>");
+            result.AppendLine($"{keyValuePair.Key}: {value:#0.0000}");
         }
         return result.ToString();
     }

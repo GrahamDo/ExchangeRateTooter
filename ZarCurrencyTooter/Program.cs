@@ -17,11 +17,13 @@
                 var now = DateTime.Now;
                 if (ShouldRun(now, args, settings))
                 {
-                    var client = new CurrenciesApiClient();
-                    var rates = await client.GetLatest(settings.ExchangeRateApiKey, settings.BaseCurrencyCode,
+                    var currencies = new CurrenciesApiClient();
+                    var rates = await currencies.GetLatest(settings.ExchangeRateApiKey, settings.BaseCurrencyCode,
                         settings.CompareCurrencyCodes);
                     var template = new TootTemplate();
                     var tootText = template.GetTootText(now, settings.BaseCurrencyCode, rates);
+                    var mastodon = new MastodonApiClient();
+                    await mastodon.Post(settings.MastodonInstanceUrl, settings.MastodonToken, tootText);
                 }
             }
             catch (ApplicationException ex)
