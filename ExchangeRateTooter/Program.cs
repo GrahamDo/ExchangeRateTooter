@@ -1,4 +1,4 @@
-﻿namespace ZarCurrencyTooter
+﻿namespace ExchangeRateTooter
 {
     internal class Program
     {

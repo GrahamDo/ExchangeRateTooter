@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace ZarCurrencyTooter;
+namespace ExchangeRateTooter;
 
 public class TootTemplate
 {

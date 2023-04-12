@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
-using System.Xml.Linq;
 
-namespace ZarCurrencyTooter
+namespace ExchangeRateTooter
 {
     internal class Settings
     {

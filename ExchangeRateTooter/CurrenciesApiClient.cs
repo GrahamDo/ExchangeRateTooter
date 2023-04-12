@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using RestSharp;
 
-namespace ZarCurrencyTooter
+namespace ExchangeRateTooter
 {
     public class CurrenciesApiClient
     {

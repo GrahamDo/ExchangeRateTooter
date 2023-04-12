@@ -1,8 +1,8 @@
-﻿using RestSharp.Authenticators.OAuth2;
+﻿using System.Text;
 using RestSharp;
-using System.Text;
+using RestSharp.Authenticators.OAuth2;
 
-namespace ZarCurrencyTooter;
+namespace ExchangeRateTooter;
 
 public class MastodonApiClient
 {
