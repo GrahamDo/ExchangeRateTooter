@@ -2,6 +2,6 @@
 
 {Rates}
 
-Note: These currencies are not to be relied upon for any mission critical purpose, or to make financial decisions. They're based on information retrieved from a publicly available API, and are used for informational purposes only.
+Note: These rates are provided for informational purposes only, and are not to be used as a basis to make financial decisions.
 
 #Currencies #ExchangeRates #Finance #Money
