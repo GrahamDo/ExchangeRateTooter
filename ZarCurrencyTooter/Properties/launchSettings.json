@@ -1,7 +1,8 @@
 {
   "profiles": {
     "ZarCurrencyTooter": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "--fake"
     }
   }
 }
