@@ -41,6 +41,10 @@
             {
                 Console.WriteLine(ex.Message);
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Unhandled Exception: {ex}");
+            }
         }
 
         private static bool ShouldRun(DateTime now, string[] args, Settings settings)
