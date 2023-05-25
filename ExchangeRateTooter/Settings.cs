@@ -17,6 +17,11 @@ namespace ExchangeRateTooter
 
         public Settings()
         {
+            ExchangeRateApiKey = string.Empty;
+            BaseCurrencyCode = string.Empty;
+            CompareCurrencyCodes = new List<string>();
+            MastodonToken = string.Empty;
+            MastodonInstanceUrl = string.Empty;
             PublicHolidays = new List<DateTime>();
         }
 
