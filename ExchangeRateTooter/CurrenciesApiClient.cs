@@ -6,8 +6,17 @@ namespace ExchangeRateTooter
 {
     public class CurrenciesApiClient
     {
+        private readonly byte _maxRetries;
+        private readonly int _retryWaitMilliseconds;
+
+        public CurrenciesApiClient(byte maxRetries, int retryWaitMilliseconds)
+        {
+            _maxRetries = maxRetries;
+            _retryWaitMilliseconds = retryWaitMilliseconds;
+        }
+
         public async Task<CurrencyLatestResults> GetLatest(string apiKey, string baseCurrencyCode,
-            List<string> compareCurrencyCodes)
+            List<string> compareCurrencyCodes, byte retryCount = 0)
         {
             if (string.IsNullOrEmpty(apiKey))
                 throw new ApplicationException("Exchange Rate API Key not specified");
@@ -27,6 +36,17 @@ namespace ExchangeRateTooter
                     throw new ApplicationException("Can't deserialise Exchange Rate Content");
 
                 return results;
+            }
+            catch (TimeoutException)
+            {
+                if (retryCount < _maxRetries)
+                {
+                    retryCount++;
+                    Thread.Sleep(_retryWaitMilliseconds);
+                    await GetLatest(apiKey, baseCurrencyCode, compareCurrencyCodes, retryCount);
+                }
+
+                throw;
             }
             catch (HttpRequestException e)
             {

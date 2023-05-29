@@ -17,7 +17,7 @@
                 var now = DateTime.Now;
                 if (ShouldRun(now, args, settings))
                 {
-                    var currencies = new CurrenciesApiClient();
+                    var currencies = new CurrenciesApiClient(5, 60000);
                     var rates = await currencies.GetLatest(settings.ExchangeRateApiKey, settings.BaseCurrencyCode,
                         settings.CompareCurrencyCodes);
                     var template = new TootTemplate();
