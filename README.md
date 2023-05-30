@@ -2,7 +2,7 @@
 
 This is a console app designed to be run as a bot. It posts a preconfigured list of exchange rates to Mastodon. For an example implementation, see https://mastodon.africa/@ZARExchangeRates
 
-## Prerequisite
+## Prerequisites
 
 In order to use this bot, you'll need an account at https://apilayer.com/ with a subscription to the ExchangeRatesData API. Don't worry, it's free for up to 250 requests per month.
 
