@@ -21,6 +21,8 @@ Then open a terminal and run the following for each setting to configure everyth
 * ExchangeRateApiKey - The API Key you received from apilayer.com
 * BaseCurrencyCode - The currency code to get exchange rates for (e.g. <code>USD</code>)
 * CompareCurrencyCodes - A comma-separated list of currencies to compare with the base (e.g. <code>EUR,GBP,AUD</code>)
+* CurrenciesMaxRetryCount - Should the currencies API time out, how many times should we retry? The default is <code>0</code> (i.e. don't retry)
+* CurrenciesRetryWaitMilliseconds - How many milliseconds should we wait between retries? The default is <code>60000</code> (i.e. one minute)
 * MastodonToken - Your Mastodon Access Token
 * MastodonInstanceUrl - The URL of your Mastodon instance (e.g. <code>mastodon.africa</code>)
 * StartTime - Don't run before this time of day (e.g. <code>09:00</code>)

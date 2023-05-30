@@ -9,6 +9,8 @@ namespace ExchangeRateTooter
         public string ExchangeRateApiKey { get; set; }
         public string BaseCurrencyCode { get; set; }
         public List<string> CompareCurrencyCodes { get; set; }
+        public byte CurrenciesMaxRetryCount { get; set; }
+        public int CurrenciesRetryWaitMilliseconds { get; set; }
         public string MastodonToken { get; set; }
         public string MastodonInstanceUrl { get; set; }
         public TimeSpan StartTime { get; set; }
@@ -20,6 +22,8 @@ namespace ExchangeRateTooter
             ExchangeRateApiKey = string.Empty;
             BaseCurrencyCode = string.Empty;
             CompareCurrencyCodes = new List<string>();
+            CurrenciesMaxRetryCount = 0;
+            CurrenciesRetryWaitMilliseconds = 60000;
             MastodonToken = string.Empty;
             MastodonInstanceUrl = string.Empty;
             PublicHolidays = new List<DateTime>();
@@ -58,6 +62,12 @@ namespace ExchangeRateTooter
                         currencyCodesList.Add(currencyCode);
                     CompareCurrencyCodes = currencyCodesList;
                     break;
+                case "currenciesmaxretrycount":
+                    CurrenciesMaxRetryCount = TryConvertByte(value);
+                    break;
+                case "currenciesretrywaitmilliseconds":
+                    CurrenciesRetryWaitMilliseconds = TryConvertInt(value, true);
+                    break;
                 case "mastodontoken":
                     MastodonToken = value;
                     break;
@@ -80,6 +90,24 @@ namespace ExchangeRateTooter
                 default:
                     throw new ApplicationException($"Invalid setting: {setting}");
             }
+        }
+
+        private byte TryConvertByte(string value)
+        {
+            var isByte = byte.TryParse(value, out var result);
+            if (!isByte)
+                throw new ApplicationException("Value should be a whole number between 0 and 255");
+
+            return result;
+        }
+
+        private int TryConvertInt(string value, bool mustBePositive)
+        {
+            var isInt = int.TryParse(value, out var result);
+            if (!isInt || (mustBePositive && result < 0))
+                throw new ApplicationException("Value should be a valid whole number");
+
+            return result;
         }
 
         public TimeSpan TryFormatTimeSpan(string value)
