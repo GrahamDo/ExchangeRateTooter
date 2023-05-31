@@ -43,10 +43,9 @@ namespace ExchangeRateTooter
                 {
                     retryCount++;
                     Thread.Sleep(_retryWaitMilliseconds);
-                    await GetLatest(apiKey, baseCurrencyCode, compareCurrencyCodes, retryCount);
-                }
-
-                throw;
+                    return await GetLatest(apiKey, baseCurrencyCode, compareCurrencyCodes, retryCount);
+                } else
+                    throw;
             }
             catch (HttpRequestException e)
             {
