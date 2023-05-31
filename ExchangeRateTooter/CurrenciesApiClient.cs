@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using Newtonsoft.Json;
 using RestSharp;
 
@@ -44,13 +45,21 @@ namespace ExchangeRateTooter
                     retryCount++;
                     Thread.Sleep(_retryWaitMilliseconds);
                     return await GetLatest(apiKey, baseCurrencyCode, compareCurrencyCodes, retryCount);
-                } else
-                    throw;
+                } 
+
+                throw;
             }
             catch (HttpRequestException e)
             {
                 if (e.Message.Contains("Unauthorized"))
                     throw new ApplicationException("Invalid Exchange Rate API Key");
+                if (e.StatusCode != null && (uint)e.StatusCode == 522 && retryCount < _maxRetries)
+                {
+                    // 522 is the Cloudflare-specific error meaning Timeout
+                    retryCount++;
+                    Thread.Sleep(_retryWaitMilliseconds);
+                    return await GetLatest(apiKey, baseCurrencyCode, compareCurrencyCodes, retryCount);
+                }
 
                 throw;
             }
