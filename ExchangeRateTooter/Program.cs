@@ -4,9 +4,10 @@
     {
         private static async Task Main(string[] args)
         {
+            var settings = Settings.Load();
+
             try
             {
-                var settings = Settings.Load();
                 if (args.Length == 3 && args[0].ToLower() == "--set")
                 {
                     settings.SetValueFromArguments(args[1], args[2]);
@@ -39,11 +40,32 @@
             }
             catch (ApplicationException ex)
             {
-                Console.WriteLine(ex.Message);
+                await ReportError(settings, ex.Message, false);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Unhandled Exception: {ex}");
+                await ReportError(settings, ex.ToString(), true);
+            }
+        }
+
+        private static async Task ReportError(Settings settings, string error, bool isUnhandled)
+        {
+            var text = isUnhandled ? "Unhandled Exception: " + error : error;
+            Console.WriteLine(text);
+
+            if (!string.IsNullOrEmpty(settings.DmAccountName))
+            {
+                var mastodon = new MastodonApiClient();
+                try
+                {
+                    var tootText = $"{settings.DmAccountName} {text}";
+                    await mastodon.Post(settings.MastodonInstanceUrl, settings.MastodonToken, tootText, true);
+                    Console.WriteLine($"Sent a DM to {settings.DmAccountName}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Tried to DM {settings.DmAccountName} but failed: {ex}");
+                }
             }
         }
 
