@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Newtonsoft.Json;
 using RestSharp;
 using RestSharp.Authenticators.OAuth2;
 
@@ -35,13 +36,29 @@ public class MastodonApiClient
         return baseUrlSb.ToString();
     }
 
+    private async Task<int> GetTootCharacterLimit()
+    {
+        // This assumes the client has been initialised by the Post method
+        var request = new RestRequest("instance");
+        var response = await _restClient.GetAsync(request);
+        if (response?.Content == null)
+            throw new ApplicationException("Empty response from getting instance info");
+
+        var results = JsonConvert.DeserializeObject<InstanceInfo>(response.Content);
+        if (results == null)
+            throw new ApplicationException("Can't deserialise instance info");
+
+        return results.Configuration.Statuses.MaxChars;
+
+    }
 
     public async Task Post(string instanceUrl, string token, string text)
     {
         InitialiseClient(instanceUrl, token);
+        var charLimit = await GetTootCharacterLimit();
         var status = new MastodonStatus
         {
-            Status = text
+            Status = ShortenText(text, charLimit)
         };
         var request = new RestRequest("statuses", Method.Post).AddJsonBody(status);
         try
@@ -56,4 +73,7 @@ public class MastodonApiClient
             throw;
         }
     }
+
+    private string ShortenText(string text, int charLimit)
+        => text.Length <= charLimit ? text : text.Substring(0, charLimit);
 }
