@@ -13,6 +13,7 @@ namespace ExchangeRateTooter
         public int CurrenciesRetryWaitMilliseconds { get; set; }
         public string MastodonToken { get; set; }
         public string MastodonInstanceUrl { get; set; }
+        public string DmAccountName { get; set; }
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
         public List<DateTime> PublicHolidays { get; set; }
@@ -26,6 +27,7 @@ namespace ExchangeRateTooter
             CurrenciesRetryWaitMilliseconds = 60000;
             MastodonToken = string.Empty;
             MastodonInstanceUrl = string.Empty;
+            DmAccountName = string.Empty;
             PublicHolidays = new List<DateTime>();
         }
 
@@ -73,6 +75,9 @@ namespace ExchangeRateTooter
                     break;
                 case "mastodoninstanceurl":
                     MastodonInstanceUrl = value;
+                    break;
+                case "dmaccountname":
+                    DmAccountName = value;
                     break;
                 case "starttime":
                     StartTime = TryFormatTimeSpan(value);

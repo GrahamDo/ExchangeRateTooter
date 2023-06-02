@@ -25,6 +25,7 @@ Then open a terminal and run the following for each setting to configure everyth
 * CurrenciesRetryWaitMilliseconds - How many milliseconds should we wait between retries? The default is <code>60000</code> (i.e. one minute)
 * MastodonToken - Your Mastodon Access Token
 * MastodonInstanceUrl - The URL of your Mastodon instance (e.g. <code>mastodon.africa</code>)
+* DmAccountName - The bot will send a direct message to this account in case something goes wrong (e.g. <code>@ThisIsMe@myinstance.social</code>)
 * StartTime - Don't run before this time of day (e.g. <code>09:00</code>)
 * EndTime - Don't run after this time of day (e.g. <code>17:00</code>)
 * PublicHolidays - A comma separated list of dates on which you don't want the app to run (it automatically won't run on Saturdays or Sundays) (e.g. <code>2023-01-01,2023-03-21,2023-12-25</code>)
