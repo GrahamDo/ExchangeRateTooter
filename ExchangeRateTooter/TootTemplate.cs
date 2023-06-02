@@ -21,8 +21,11 @@ public class TootTemplate
         var result = new StringBuilder();
         foreach (var keyValuePair in rates.Rates)
         {
+            if (result.Length > 0)
+                result.AppendLine();
+
             var value = 1 / keyValuePair.Value;
-            result.AppendLine($"{keyValuePair.Key}: {value:#0.0000}");
+            result.Append($"{keyValuePair.Key}: {value:#0.0000}");
         }
         return result.ToString();
     }
