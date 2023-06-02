@@ -52,7 +52,7 @@ public class MastodonApiClient
 
     }
 
-    public async Task Post(string instanceUrl, string token, string text)
+    public async Task Post(string instanceUrl, string token, string text, bool isDirect = false)
     {
         InitialiseClient(instanceUrl, token);
         var charLimit = await GetTootCharacterLimit();
@@ -60,6 +60,9 @@ public class MastodonApiClient
         {
             Status = ShortenText(text, charLimit)
         };
+        if (isDirect)
+            status.Visibility = "direct";
+
         var request = new RestRequest("statuses", Method.Post).AddJsonBody(status);
         try
         {
