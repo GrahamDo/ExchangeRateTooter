@@ -5,6 +5,7 @@
         private static async Task Main(string[] args)
         {
             var settings = Settings.Load();
+            var mastodonClient = new MastodonApiClient(new MaxCharactersCacheManager());
 
             try
             {
@@ -33,33 +34,31 @@
                     }
                     else
                     {
-                        var mastodon = new MastodonApiClient();
-                        await mastodon.Post(settings.MastodonInstanceUrl, settings.MastodonToken, tootText);
+                        await mastodonClient.Post(settings.MastodonInstanceUrl, settings.MastodonToken, tootText);
                     }
                 }
             }
             catch (ApplicationException ex)
             {
-                await ReportError(settings, ex.Message, false);
+                await ReportError(settings, mastodonClient, ex.Message, false);
             }
             catch (Exception ex)
             {
-                await ReportError(settings, ex.ToString(), true);
+                await ReportError(settings, mastodonClient, ex.ToString(), true);
             }
         }
 
-        private static async Task ReportError(Settings settings, string error, bool isUnhandled)
+        private static async Task ReportError(Settings settings, MastodonApiClient mastodonClient, string error, bool isUnhandled)
         {
             var text = isUnhandled ? "Unhandled Exception: " + error : error;
             Console.WriteLine(text);
 
             if (!string.IsNullOrEmpty(settings.DmAccountName))
             {
-                var mastodon = new MastodonApiClient();
                 try
                 {
                     var tootText = $"{settings.DmAccountName} {text}";
-                    await mastodon.Post(settings.MastodonInstanceUrl, settings.MastodonToken, tootText, true);
+                    await mastodonClient.Post(settings.MastodonInstanceUrl, settings.MastodonToken, tootText, true);
                     Console.WriteLine($"Sent a DM to {settings.DmAccountName}");
                 }
                 catch (Exception ex)

@@ -8,6 +8,12 @@ namespace ExchangeRateTooter;
 public class MastodonApiClient
 {
     private RestClient _restClient = null!;
+    private readonly MaxCharactersCacheManager _cacheManager;
+
+    public MastodonApiClient(MaxCharactersCacheManager cacheManager)
+    {
+        _cacheManager = cacheManager;
+    }
 
     private void InitialiseClient(string instanceUrl, string token)
     {
@@ -38,6 +44,10 @@ public class MastodonApiClient
 
     private async Task<int> GetTootCharacterLimit()
     {
+        var charLimit = _cacheManager.GetMaxCharacters();
+        if (charLimit > 0)
+            return charLimit;
+
         // This assumes the client has been initialised by the Post method
         var request = new RestRequest("instance");
         var response = await _restClient.GetAsync(request);
@@ -48,8 +58,9 @@ public class MastodonApiClient
         if (results == null)
             throw new ApplicationException("Can't deserialise instance info");
 
-        return results.Configuration.Statuses.MaxChars;
-
+        charLimit = results.Configuration.Statuses.MaxChars;
+        _cacheManager.SaveMaxCharacters(charLimit);
+        return charLimit;
     }
 
     public async Task Post(string instanceUrl, string token, string text, bool isDirect = false)
