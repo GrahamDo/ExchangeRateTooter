@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices.JavaScript;
-
-namespace ExchangeRateTooter
+﻿namespace ExchangeRateTooter
 {
     public class MaxCharactersCacheManager
     {
@@ -33,6 +31,13 @@ namespace ExchangeRateTooter
             _cachedValue = value;
             var line = $"{value}\t{DateTime.Now:yyyy-MM-dd HH:mm:ss}";
             File.WriteAllText(CacheFileName, line);
+        }
+
+        public void ClearCache()
+        {
+            _cachedValue = 0;
+            if (File.Exists(CacheFileName))
+                File.Delete(CacheFileName);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Net;
+using System.Text;
 using Newtonsoft.Json;
 using RestSharp;
 using RestSharp.Authenticators.OAuth2;
@@ -63,7 +64,7 @@ public class MastodonApiClient
         return charLimit;
     }
 
-    public async Task Post(string instanceUrl, string token, string text, bool isDirect = false)
+    public async Task Post(string instanceUrl, string token, string text, bool isDirect = false, bool isRetry = false)
     {
         InitialiseClient(instanceUrl, token);
         var charLimit = await GetTootCharacterLimit();
@@ -83,6 +84,13 @@ public class MastodonApiClient
         {
             if (ex.Message.Contains("Forbidden"))
                 throw new ApplicationException("Invalid Mastodon token");
+            if (ex.StatusCode == HttpStatusCode.UnprocessableEntity && !isRetry)
+            {
+                // It could be the character limit that's decreased. Clear the cache and try again once
+                _cacheManager.ClearCache();
+                await Post(instanceUrl, token, text, isDirect, true);
+                return;
+            }
 
             throw;
         }
