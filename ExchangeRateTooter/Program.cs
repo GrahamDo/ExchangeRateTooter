@@ -22,6 +22,7 @@
                     var currencies = new CurrenciesApiClient(settings.CurrenciesMaxRetryCount, settings.CurrenciesRetryWaitMilliseconds);
                     var rates = await currencies.GetLatest(settings.ExchangeRateApiKey, settings.BaseCurrencyCode,
                         settings.CompareCurrencyCodes);
+                    now = DateTime.Now;
                     var template = new TootTemplate();
                     var tootText = template.GetTootText(now, settings.BaseCurrencyCode, rates);
 
