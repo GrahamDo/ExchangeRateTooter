@@ -11,15 +11,14 @@
                 return _cachedValue;
             if (!File.Exists(CacheFileName))
                 return 0;
-
-            var line = File.ReadAllText(CacheFileName);
-            var fields = line.Split("\t");
-            var isInt = int.TryParse(fields[0], out var value);
-            if (!isInt) 
+            
+            var lastModifiedDate = File.GetLastWriteTime(CacheFileName);
+            if (lastModifiedDate.Subtract(DateTime.Now).Days >= 10)
                 return 0;
 
-            var isDate = DateTime.TryParse(fields[1], out var date);
-            if (!isDate || date.Subtract(DateTime.Now).Days >= 10) 
+            var contents = File.ReadAllText(CacheFileName);
+            var isInt = int.TryParse(contents, out var value);
+            if (!isInt) 
                 return 0;
 
             _cachedValue = value;
@@ -29,8 +28,7 @@
         public void SaveMaxCharacters(int value)
         {
             _cachedValue = value;
-            var line = $"{value}\t{DateTime.Now:yyyy-MM-dd HH:mm:ss}";
-            File.WriteAllText(CacheFileName, line);
+            File.WriteAllText(CacheFileName, value.ToString());
         }
 
         public void ClearCache()
