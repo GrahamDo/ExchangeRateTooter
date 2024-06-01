@@ -2,12 +2,6 @@
 
 public class MastodonStatus
 {
-    public string Status { get; set; }
-    public string Visibility { get; set; }
-
-    public MastodonStatus()
-    {
-        Status = string.Empty;
-        Visibility = "public";
-    }
+    public string Status { get; set; } = string.Empty;
+    public string Visibility { get; set; } = "public";
 }

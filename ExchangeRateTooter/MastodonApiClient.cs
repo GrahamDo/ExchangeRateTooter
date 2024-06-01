@@ -6,15 +6,9 @@ using RestSharp.Authenticators.OAuth2;
 
 namespace ExchangeRateTooter;
 
-public class MastodonApiClient
+public class MastodonApiClient(MaxCharactersCacheManager mainCacheManager)
 {
     private RestClient _restClient = null!;
-    private readonly MaxCharactersCacheManager _cacheManager;
-
-    public MastodonApiClient(MaxCharactersCacheManager cacheManager)
-    {
-        _cacheManager = cacheManager;
-    }
 
     private void InitialiseClient(string instanceUrl, string token)
     {
@@ -45,7 +39,7 @@ public class MastodonApiClient
 
     private async Task<int> GetTootCharacterLimit()
     {
-        var charLimit = _cacheManager.GetMaxCharacters();
+        var charLimit = mainCacheManager.GetMaxCharacters();
         if (charLimit > 0)
             return charLimit;
 
@@ -60,7 +54,7 @@ public class MastodonApiClient
             throw new ApplicationException("Can't deserialise instance info");
 
         charLimit = results.Configuration.Statuses.MaxChars;
-        _cacheManager.SaveMaxCharacters(charLimit);
+        mainCacheManager.SaveMaxCharacters(charLimit);
         return charLimit;
     }
 
@@ -87,7 +81,7 @@ public class MastodonApiClient
             if (ex.StatusCode == HttpStatusCode.UnprocessableEntity && !isRetry)
             {
                 // It could be the character limit that's decreased. Clear the cache and try again once
-                _cacheManager.ClearCache();
+                mainCacheManager.ClearCache();
                 await Post(instanceUrl, token, text, isDirect, true);
                 return;
             }
@@ -96,6 +90,6 @@ public class MastodonApiClient
         }
     }
 
-    private string ShortenText(string text, int charLimit)
+    private static string ShortenText(string text, int charLimit)
         => text.Length <= charLimit ? text : text.Substring(0, charLimit);
 }

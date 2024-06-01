@@ -6,30 +6,17 @@ namespace ExchangeRateTooter
     {
         private const string SettingsFileName = "settings.json";
 
-        public string ExchangeRateApiKey { get; set; }
-        public string BaseCurrencyCode { get; set; }
-        public List<string> CompareCurrencyCodes { get; set; }
-        public byte CurrenciesMaxRetryCount { get; set; }
-        public int CurrenciesRetryWaitMilliseconds { get; set; }
-        public string MastodonToken { get; set; }
-        public string MastodonInstanceUrl { get; set; }
-        public string DmAccountName { get; set; }
+        public string ExchangeRateApiKey { get; set; } = string.Empty;
+        public string BaseCurrencyCode { get; set; } = string.Empty;
+        public List<string> CompareCurrencyCodes { get; set; } = [];
+        public byte CurrenciesMaxRetryCount { get; set; } = 0;
+        public int CurrenciesRetryWaitMilliseconds { get; set; } = 60000;
+        public string MastodonToken { get; set; } = string.Empty;
+        public string MastodonInstanceUrl { get; set; } = string.Empty;
+        public string DmAccountName { get; set; } = string.Empty;
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
-        public List<DateTime> PublicHolidays { get; set; }
-
-        public Settings()
-        {
-            ExchangeRateApiKey = string.Empty;
-            BaseCurrencyCode = string.Empty;
-            CompareCurrencyCodes = new List<string>();
-            CurrenciesMaxRetryCount = 0;
-            CurrenciesRetryWaitMilliseconds = 60000;
-            MastodonToken = string.Empty;
-            MastodonInstanceUrl = string.Empty;
-            DmAccountName = string.Empty;
-            PublicHolidays = new List<DateTime>();
-        }
+        public List<DateTime> PublicHolidays { get; set; } = [];
 
         public static Settings Load()
         {
@@ -97,7 +84,7 @@ namespace ExchangeRateTooter
             }
         }
 
-        private byte TryConvertByte(string value)
+        private static byte TryConvertByte(string value)
         {
             var isByte = byte.TryParse(value, out var result);
             if (!isByte)
@@ -106,7 +93,7 @@ namespace ExchangeRateTooter
             return result;
         }
 
-        private int TryConvertInt(string value, bool mustBePositive)
+        private static int TryConvertInt(string value, bool mustBePositive)
         {
             var isInt = int.TryParse(value, out var result);
             if (!isInt || (mustBePositive && result < 0))
@@ -115,7 +102,7 @@ namespace ExchangeRateTooter
             return result;
         }
 
-        public TimeSpan TryFormatTimeSpan(string value)
+        private static TimeSpan TryFormatTimeSpan(string value)
         {
             var isTimeSpan = TimeSpan.TryParse(value, out var result);
             if (!isTimeSpan)
@@ -123,7 +110,7 @@ namespace ExchangeRateTooter
 
             return result;
         }
-        public DateTime TryFormatDateTime(string value)
+        private static DateTime TryFormatDateTime(string value)
         {
             var isDateTime = DateTime.TryParse(value, out var result);
             if (!isDateTime)

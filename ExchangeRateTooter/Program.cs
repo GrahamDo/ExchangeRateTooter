@@ -69,9 +69,9 @@
             }
         }
 
-        private static bool ShouldRun(DateTime now, string[] args, Settings settings)
+        private static bool ShouldRun(DateTime now, IReadOnlyList<string> args, Settings settings)
         {
-            if (args.Length == 1 && args[0].ToLower() == "--force")
+            if (args.Count == 1 && args[0].ToLower() == "--force")
                 return true;
 
             if (now.DayOfWeek == DayOfWeek.Saturday || now.DayOfWeek == DayOfWeek.Sunday)

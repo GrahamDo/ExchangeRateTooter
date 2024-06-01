@@ -5,17 +5,8 @@ using RestSharp;
 
 namespace ExchangeRateTooter
 {
-    public class CurrenciesApiClient
+    public class CurrenciesApiClient(byte mainMaxRetries, int mainRetryWaitMilliseconds)
     {
-        private readonly byte _maxRetries;
-        private readonly int _retryWaitMilliseconds;
-
-        public CurrenciesApiClient(byte maxRetries, int retryWaitMilliseconds)
-        {
-            _maxRetries = maxRetries;
-            _retryWaitMilliseconds = retryWaitMilliseconds;
-        }
-
         public async Task<CurrencyLatestResults> GetLatest(string apiKey, string baseCurrencyCode,
             List<string> compareCurrencyCodes, byte retryCount = 0)
         {
@@ -40,10 +31,10 @@ namespace ExchangeRateTooter
             }
             catch (TimeoutException)
             {
-                if (retryCount < _maxRetries)
+                if (retryCount < mainMaxRetries)
                 {
                     retryCount++;
-                    Thread.Sleep(_retryWaitMilliseconds);
+                    Thread.Sleep(mainRetryWaitMilliseconds);
                     return await GetLatest(apiKey, baseCurrencyCode, compareCurrencyCodes, retryCount);
                 } 
 
@@ -53,11 +44,11 @@ namespace ExchangeRateTooter
             {
                 if (e.Message.Contains("Unauthorized"))
                     throw new ApplicationException("Invalid Exchange Rate API Key");
-                if (e.StatusCode != null && (uint)e.StatusCode == 522 && retryCount < _maxRetries)
+                if (e.StatusCode != null && (uint)e.StatusCode == 522 && retryCount < mainMaxRetries)
                 {
                     // 522 is the Cloudflare-specific error meaning Timeout
                     retryCount++;
-                    Thread.Sleep(_retryWaitMilliseconds);
+                    Thread.Sleep(mainRetryWaitMilliseconds);
                     return await GetLatest(apiKey, baseCurrencyCode, compareCurrencyCodes, retryCount);
                 }
 
@@ -65,7 +56,7 @@ namespace ExchangeRateTooter
             }
         }
 
-        private string ConvertCurrencyCodesToCsv(List<string> currencyCodes)
+        private static string ConvertCurrencyCodesToCsv(List<string> currencyCodes)
         {
             var result = new StringBuilder();
             currencyCodes.ForEach(currencyCode =>

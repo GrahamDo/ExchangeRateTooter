@@ -2,25 +2,14 @@
 
 namespace ExchangeRateTooter
 {
-
     public class InstanceInfo
     {
-        public InstanceInfo()
-        {
-            Configuration = new InstanceInfoConfiguration();
-        }
-
-        public InstanceInfoConfiguration Configuration { get; set; }
+        public InstanceInfoConfiguration Configuration { get; set; } = new();
     }
 
     public class InstanceInfoConfiguration
     {
-        public InstanceInfoConfiguration()
-        {
-            Statuses = new InstanceInfoConfigurationStatuses();
-        }
-
-        public InstanceInfoConfigurationStatuses Statuses { get; set; }
+        public InstanceInfoConfigurationStatuses Statuses { get; set; } = new();
     }
 
     public class InstanceInfoConfigurationStatuses
