@@ -31,8 +31,8 @@ public class MastodonApiClient(MaxCharactersCacheManager mainCacheManager)
         if (!instanceUrl.StartsWith("https://"))
             baseUrlSb.Append("https://");
         baseUrlSb.Append(instanceUrl);
-        if (!instanceUrl.EndsWith("/"))
-            baseUrlSb.Append("/");
+        if (!instanceUrl.EndsWith('/'))
+            baseUrlSb.Append('/');
         baseUrlSb.Append("api/v1/");
         return baseUrlSb.ToString();
     }
@@ -46,7 +46,7 @@ public class MastodonApiClient(MaxCharactersCacheManager mainCacheManager)
         // This assumes the client has been initialised by the Post method
         var request = new RestRequest("instance");
         var response = await _restClient.GetAsync(request);
-        if (response?.Content == null)
+        if (response.Content == null)
             throw new ApplicationException("Empty response from getting instance info");
 
         var results = JsonConvert.DeserializeObject<InstanceInfo>(response.Content);

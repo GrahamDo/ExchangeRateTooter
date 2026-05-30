@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+// ReSharper disable MemberCanBePrivate.Global
+// All properties must have public getters and setters in order for serialisation to work
 
 namespace ExchangeRateTooter
 {
@@ -9,7 +11,7 @@ namespace ExchangeRateTooter
         public string ExchangeRateApiKey { get; set; } = string.Empty;
         public string BaseCurrencyCode { get; set; } = string.Empty;
         public List<string> CompareCurrencyCodes { get; set; } = [];
-        public byte CurrenciesMaxRetryCount { get; set; } = 0;
+        public byte CurrenciesMaxRetryCount { get; set; }
         public int CurrenciesRetryWaitMilliseconds { get; set; } = 60000;
         public string MastodonToken { get; set; } = string.Empty;
         public string MastodonInstanceUrl { get; set; } = string.Empty;

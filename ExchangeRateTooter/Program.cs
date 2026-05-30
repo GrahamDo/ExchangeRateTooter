@@ -1,6 +1,8 @@
-﻿namespace ExchangeRateTooter
+﻿using System.Diagnostics;
+
+namespace ExchangeRateTooter
 {
-    internal class Program
+    public static class Program
     {
         private static async Task Main(string[] args)
         {
@@ -9,7 +11,7 @@
 
             try
             {
-                if (args.Length == 3 && args[0].ToLower() == "--set")
+                if (args.Length == 3 && string.Equals(args[0], "--set", StringComparison.OrdinalIgnoreCase))
                 {
                     settings.SetValueFromArguments(args[1], args[2]);
                     settings.Save();
@@ -69,12 +71,13 @@
             }
         }
 
-        private static bool ShouldRun(DateTime now, IReadOnlyList<string> args, Settings settings)
+        private static bool ShouldRun(DateTime now, string[] args, Settings settings)
         {
-            if (args.Count == 1 && args[0].ToLower() == "--force")
+            Debug.Assert(args != null, nameof(args) + " != null");
+            if (args.Length == 1 && string.Equals(args[0], "--force", StringComparison.OrdinalIgnoreCase))
                 return true;
 
-            if (now.DayOfWeek == DayOfWeek.Saturday || now.DayOfWeek == DayOfWeek.Sunday)
+            if (now.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)
                 throw new ApplicationException($"Not running on {now.DayOfWeek}");
 
             if (settings.StartTime == new TimeSpan(0, 0, 0, 0) && settings.EndTime == new TimeSpan(0, 0, 0, 0))

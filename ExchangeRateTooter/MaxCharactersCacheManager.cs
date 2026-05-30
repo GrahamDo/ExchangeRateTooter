@@ -3,7 +3,7 @@
     public class MaxCharactersCacheManager
     {
         private const string CacheFileName = "max-characters";
-        private int _cachedValue = 0;
+        private int _cachedValue;
 
         public int GetMaxCharacters()
         {
