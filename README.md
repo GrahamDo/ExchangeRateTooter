@@ -10,7 +10,7 @@ You'll also need a Mastodon Access Token with permission to <code>write:statuses
 
 ## Getting it running
 
-Pull the code and build it for your preferred platform. I've tested it on both Windows x64 and Ubuntu 23.04 x64.
+Pull the code and build it for your preferred platform. I've tested it on both Windows x64 and Ubuntu 26.04 x64.
 
 Then open a terminal and run the following for each setting to configure everything:
 
