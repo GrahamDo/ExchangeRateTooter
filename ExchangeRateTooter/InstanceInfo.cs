@@ -1,20 +1,24 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// All properties must be read/write for serialization
 
-namespace ExchangeRateTooter
+namespace ExchangeRateTooter;
+
+internal class InstanceInfo
 {
-    public class InstanceInfo
-    {
-        public InstanceInfoConfiguration Configuration { get; set; } = new();
-    }
+    [JsonPropertyName("configuration")]
+    public InstanceInfoConfiguration Configuration { get; init; } = new();
+}
 
-    public class InstanceInfoConfiguration
-    {
-        public InstanceInfoConfigurationStatuses Statuses { get; set; } = new();
-    }
+internal class InstanceInfoConfiguration
+{
+    [JsonPropertyName("statuses")]
+    public InstanceInfoConfigurationStatuses Statuses { get; init; } = new();
+}
 
-    public class InstanceInfoConfigurationStatuses
-    {
-        [JsonProperty("max_characters")]
-        public int MaxChars { get; set; }
-    }
+internal class InstanceInfoConfigurationStatuses
+{
+    [JsonPropertyName("max_characters")]
+    public int MaxChars { get; init; }
 }

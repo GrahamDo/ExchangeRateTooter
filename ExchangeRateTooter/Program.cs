@@ -7,7 +7,8 @@ namespace ExchangeRateTooter
         private static async Task Main(string[] args)
         {
             var settings = Settings.Load();
-            var mastodonClient = new MastodonApiClient(new MaxCharactersCacheManager());
+            var httpClientFactory = new HttpClientFactory();
+            var mastodonClient = new MastodonApiClient(new MaxCharactersCacheManager(), httpClientFactory);
 
             try
             {
