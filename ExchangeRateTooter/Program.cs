@@ -22,7 +22,7 @@ namespace ExchangeRateTooter
                 var now = DateTime.Now;
                 if (ShouldRun(now, args, settings))
                 {
-                    var currencies = new CurrenciesApiClient(settings.CurrenciesMaxRetryCount, settings.CurrenciesRetryWaitMilliseconds);
+                    var currencies = new CurrenciesApiClient(settings.CurrenciesMaxRetryCount, settings.CurrenciesRetryWaitMilliseconds, httpClientFactory);
                     var rates = await currencies.GetLatest(settings.ExchangeRateApiKey, settings.BaseCurrencyCode,
                         settings.CompareCurrencyCodes);
                     now = DateTime.Now;
