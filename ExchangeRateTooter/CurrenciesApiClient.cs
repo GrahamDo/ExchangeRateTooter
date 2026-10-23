@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace ExchangeRateTooter
 {
@@ -25,7 +25,7 @@ namespace ExchangeRateTooter
                     throw new ApplicationException("Empty response from Exchange Rate API Client");
 
                 var json = await response.Content.ReadAsStringAsync();
-                var results = JsonConvert.DeserializeObject<CurrencyLatestResults>(json);
+                var results = JsonSerializer.Deserialize<CurrencyLatestResults>(json);
                 if (results == null)
                     throw new ApplicationException("Can't deserialise Exchange Rate Content");
 

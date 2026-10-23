@@ -1,6 +1,7 @@
-﻿using Newtonsoft.Json;
-// ReSharper disable MemberCanBePrivate.Global
+﻿// ReSharper disable MemberCanBePrivate.Global
 // All properties must have public getters and setters in order for serialisation to work
+
+using System.Text.Json;
 
 namespace ExchangeRateTooter
 {
@@ -26,13 +27,13 @@ namespace ExchangeRateTooter
                 return new Settings();
 
             var text = File.ReadAllText(SettingsFileName);
-            return JsonConvert.DeserializeObject<Settings>(text) ??
+            return JsonSerializer.Deserialize<Settings>(text) ??
                    throw new ApplicationException($"Your '{SettingsFileName}' appears to be empty or corrupt.");
         }
 
         public void Save()
         {
-            var serialised = JsonConvert.SerializeObject(this, Formatting.Indented);
+            var serialised = JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(SettingsFileName, serialised);
         }
 
