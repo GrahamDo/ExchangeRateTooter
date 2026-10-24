@@ -6,7 +6,7 @@ namespace ExchangeRateTooter
     public class CurrenciesApiClient(byte mainMaxRetries, int mainRetryWaitMilliseconds, HttpClientFactory clientFactory)
     {
         private readonly HttpClient _client = clientFactory.GetClient();
-        
+
         public async Task<CurrencyLatestResults> GetLatest(string apiKey, string baseCurrencyCode,
             List<string> compareCurrencyCodes, byte retryCount = 0)
         {
@@ -17,45 +17,42 @@ namespace ExchangeRateTooter
             var requestUrl = $"https://api.apilayer.com/exchangerates_data/latest?base={baseCurrencyCode}&symbols={symbols}";
             var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
             request.Headers.Add("apikey", apiKey);
-            
-            try
-            {
-                using var response = await _client.SendAsync(request);
-                if (response.Content == null)
-                    throw new ApplicationException("Empty response from Exchange Rate API Client");
 
-                var json = await response.Content.ReadAsStringAsync();
-                var results = JsonSerializer.Deserialize<CurrencyLatestResults>(json);
-                if (results == null)
-                    throw new ApplicationException("Can't deserialise Exchange Rate Content");
-
-                return results;
-            }
-            catch (TimeoutException)
+            using var response = await _client.SendAsync(request);
+            if (!response.IsSuccessStatusCode)
             {
-                if (retryCount < mainMaxRetries)
+                switch (response.StatusCode)
                 {
-                    retryCount++;
-                    Thread.Sleep(mainRetryWaitMilliseconds);
-                    return await GetLatest(apiKey, baseCurrencyCode, compareCurrencyCodes, retryCount);
-                } 
+                    case System.Net.HttpStatusCode.Unauthorized:
+                    case System.Net.HttpStatusCode.Forbidden:
+                        throw new ApplicationException("Invalid Exchange Rate API Key");
+                    case System.Net.HttpStatusCode.TooManyRequests:
+                        throw new ApplicationException("Too many requests to Exchange Rate API");
+                    case System.Net.HttpStatusCode.RequestTimeout:
+                    case System.Net.HttpStatusCode.GatewayTimeout:
+                        if (retryCount == mainMaxRetries)
+                            throw new ApplicationException(
+                                $"Exchange Rate API returned status code {response.StatusCode}. Retry limit exceeded.");
 
-                throw;
-            }
-            catch (HttpRequestException e)
-            {
-                if (e.Message.Contains("Unauthorized"))
-                    throw new ApplicationException("Invalid Exchange Rate API Key");
-                if (e.StatusCode != null && (uint)e.StatusCode == 522 && retryCount < mainMaxRetries)
-                {
-                    // 522 is the Cloudflare-specific error meaning Timeout
-                    retryCount++;
-                    Thread.Sleep(mainRetryWaitMilliseconds);
-                    return await GetLatest(apiKey, baseCurrencyCode, compareCurrencyCodes, retryCount);
+                        retryCount++;
+                        Thread.Sleep(mainRetryWaitMilliseconds);
+                        return await GetLatest(apiKey, baseCurrencyCode, compareCurrencyCodes, retryCount);
+
+                    default:
+                        throw new ApplicationException(
+                            $"Exchange Rate API Client returned status code {response.StatusCode}");
                 }
-
-                throw;
             }
+
+            if (response.Content == null)
+                throw new ApplicationException("Empty response from Exchange Rate API Client");
+
+            var json = await response.Content.ReadAsStringAsync();
+            var results = JsonSerializer.Deserialize<CurrencyLatestResults>(json);
+            if (results == null)
+                throw new ApplicationException("Can't deserialise Exchange Rate Content");
+
+            return results;
         }
 
         private static string ConvertCurrencyCodesToCsv(List<string> currencyCodes)
